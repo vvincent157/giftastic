@@ -80,7 +80,9 @@
     $("#submit").on("click",function(e) {
       event.preventDefault();
       console.log(e);
-      var actor = $(this).attr("data-actor");
+      var actor = $("#actor-name-input").val();
+      console.log("Actor " + actor)
+      console.log("Submit Value " + $("#actor-name-input").val())
       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         actor + "&api_key=dc6zaTOxFJmzC&limit=10";
 
@@ -90,11 +92,14 @@
         method: "GET"
       })
         .then(function(response) {
-          console.log(response);
-          console.log(response.data);
           var topics = response.data;
-          for (var i = 0; i < topics.length; i++) {
-
+          var newActor = $("#actor-name-input").val().trim();
+          newActor = $("<button>").text(newActor);
+          newActor.addClass("actor-name")
+        newActor.attr("data-actor",newActor.text())
+      $("#button-div").append(newActor)
+      for (var i = 0; i < topics.length; i++) {
+            
 // Make sure ratings are appropriate 
 if (topics[i].rating !== "r" && topics[i].rating !== "pg-13") {
  
@@ -116,23 +121,24 @@ if (topics[i].rating !== "r" && topics[i].rating !== "pg-13") {
   gifDiv.append(actorImage);
 
   // Again prepend the actors gif
-  $("#gifs").prepend(gifDiv);
-
-  var newActor = $("#actor-name-input").val().trim();
-      console.log(newActor);
-      newActor = $("<button>").text(newActor);
-      newActor.addClass("actor-name")
-        newActor.attr("data-actor",newActor.text())
-
-
-
-      $("#button-div").append(newActor)
-
+  $("#actor-gifs").prepend(gifDiv);
 
 }
           }  
         })
 })
+$(".gif").on("click", function() {
+    
+      var state = $(this).attr("data-state");
+
+      if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+      }
+    });
   </script>
 </body>
 
