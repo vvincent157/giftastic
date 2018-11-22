@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giftastic</title>
+</head>
+
+<body>
+  <div id="button-div">
+  <button class="actor-name" data-actor="Steve Martin">Steve Martin</button>
+  <button class="actor-name" data-actor="John Candy">John Candy</button>
+  <button class="actor-name" data-actor="Bill Murray">Bill Murray</button>
+  <button class="actor-name" data-actor="Chris Farley">Chris Farley</button>
+  <button class="actor-name" data-actor="Richard Pryor">Richard Pryor</button>
+  <button class="actor-name" data-actor="Dan Akroyd">Dan Akroyd</button>
+  <button class="actor-name" data-actor="Catherine O'Hara">Catherine O'Hara</button>
+  <button class="actor-name" data-actor="Eugine Levy">Eugene Levy</button>
+  <button class="actor-name" data-actor="Julia Louis-Dreyfus">Julia Louis-Dreyfus</button>
+  <button class="actor-name" data-actor="Eddie Murphy">Eddie Murphy</button>
+  </div>
+  <form id= "actor-form">
+    <input type="text" id="actor-name-input" placeholder="Type an actor name here."><br>
+   <br>
+    <input type="submit" id="submit" value="Submit">
+   </form>
+  <div id="actor-gifs">
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $("button").on("click", function() {
+      $("#actor-gifs").empty();
+      var actor = $(this).attr("data-actor");
+
+      // GIPHY url for Actors
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        actor + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      // AJAX GET request here
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function(response) {
+          // Array of our topic (comedy actors)
+          var topics = response.data;
+
+      // Looping over every result item
+          for (var i = 0; i < topics.length; i++) {
+
+            // Only taking action if the photo has an appropriate rating
+            if (topics[i].rating !== "r" && topics[i].rating !== "pg-13") {
+              // Creating a div for the gif
+              var gifDiv = $("<div>");
+
+            //Storing ratings
+              var rating = topics[i].rating;
+
+              // P tag for rating
+              var p = $("<p>").text("Rating: " + rating);
+
+              // Creating an image tag
+              var actorImage = $("<img>");
+
+              // Giving the image tag an src attribute of a proprty pulled off the
+              // result item
+              actorImage.attr("src", topics[i].images.fixed_height.url);
+
+              // Appending p with gifDiv
+              gifDiv.append(p);
+              gifDiv.append(actorImage);
+
+             // Per class activity, Prepend actors gif although unsure why
+              $("#actor-gifs").prepend(gifDiv);
+            }
+          }
+        });
+    });
+    $("#submit").on("click",function(e) {
+      event.preventDefault();
+      console.log(e);
+      var actor = $(this).attr("data-actor");
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        actor + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      // Performing our AJAX GET request
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function(response) {
+          console.log(response);
+          console.log(response.data);
+          var topics = response.data;
+          for (var i = 0; i < topics.length; i++) {
+
+// Make sure ratings are appropriate 
+if (topics[i].rating !== "r" && topics[i].rating !== "pg-13") {
+ 
+  var gifDiv = $("<div>");
+
+  var rating = topics[i].rating;
+
+  var p = $("<p>").text("Rating: " + rating);
+
+  // Creating an image tag
+  var actorImage = $("<img>");
+
+  // Giving the image tag an src attribute of a proprty pulled off the
+  // result item
+  actorImage.attr("src", topics[i].images.fixed_height.url);
+
+  // Appending p & imaage with gifDiv
+  gifDiv.append(p);
+  gifDiv.append(actorImage);
+
+  // Again prepend the actors gif
+  $("#gifs").prepend(gifDiv);
+
+  var newActor = $("#actor-name-input").val().trim();
+      console.log(newActor);
+      newActor = $("<button>").text(newActor);
+      newActor.addClass("actor-name")
+        newActor.attr("data-actor",newActor.text())
+
+
+
+      $("#button-div").append(newActor)
+
+
+}
+          }  
+        })
+})
+  </script>
+</body>
+
+</html>
